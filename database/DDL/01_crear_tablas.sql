@@ -5,7 +5,7 @@ default collate utf8mb4_0900_ai_ci;
 use presupuesto_personal;
 
 create table usuario (
-  id_usuario int primary key,
+  id_usuario int auto_increment primary key,
   primer_nombre varchar(100),
   segundo_nombre varchar(100),
   primer_apellido varchar(100),
@@ -22,7 +22,7 @@ create table usuario (
 );
 
 create table presupuesto (
-  id_presupuesto int primary key,
+  id_presupuesto int auto_increment primary key,
   id_usuario int not null,
   nombre varchar(100) not null,
   anio_inicio int not null,
@@ -47,7 +47,7 @@ create table presupuesto (
 );
 
 create table categoria (
-  id_categoria int primary key,
+  id_categoria int auto_increment primary key,
   nombre varchar(100) not null,
   descripcion_detallada varchar(100),
   tipo_categoria varchar(40) not null,
@@ -59,7 +59,7 @@ create table categoria (
 );
 
 create table subcategoria (
-  id_subcategoria int primary key,
+  id_subcategoria int auto_increment primary key,
   id_categoria int not null,
   nombre varchar(100) not null,
   descripcion_detallada varchar(300),
@@ -78,7 +78,7 @@ create table subcategoria (
 );
 
 create table presupuesto_detalle (
-  id_detalle int primary key,
+  id_detalle int auto_increment primary key,
   id_presupuesto int not null,
   id_subcategoria int not null,
   monto_mensual_asignado decimal(20,5) not null,
@@ -101,15 +101,15 @@ create table presupuesto_detalle (
 );
 
 create table obligacion_fija (
-  id_obligacion int primary key,
+  id_obligacion int auto_increment primary key,
   id_subcategoria int not null,
   nombre varchar(100) not null,
   descripcion_detallada varchar(300),
   monto_fijo_mensual decimal(20,5) not null,
   dia_vencimiento int not null,
   vigente tinyint(1) not null default 1,
-  fecha_inicio datetime not null,
-  fecha_fin datetime,
+  fecha_inicio timestamp not null default current_timestamp,
+  fecha_fin timestamp,
 
   creado_en timestamp not null default current_timestamp,
   modificado_en timestamp not null default current_timestamp on update current_timestamp,
@@ -123,14 +123,14 @@ create table obligacion_fija (
 );
 
 create table transaccion (
-  id_transaccion int primary key,
+  id_transaccion int auto_increment primary key,
   id_detalle int not null,
   anio_transaccion int not null,
   mes_transaccion int not null,
   tipo_transaccion varchar(40) not null,
   descripcion varchar(300),
   monto_transaccion decimal(20,5) not null,
-  fecha_transaccion datetime not null,
+  fecha_transaccion timestamp not null,
   metodo_pago varchar(40),
   num_factura int,
   observaciones varchar(300),
