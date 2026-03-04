@@ -1,64 +1,94 @@
 table usuario {
   id_usuario int [primary key]
-  primer_nombre varchar(300)
-  segundo_nombre varchar(300)
-  primer_apellido varchar(300)
-  segundo_apellido varchar(300)
-  correo_electronico varchar(300)
-  salario_mensual numeric(30, 5)
+  primer_nombre varchar(100)
+  segundo_nombre varchar(100)
+  primer_apellido varchar(100)
+  segundo_apellido varchar(100)
+  correo_electronico varchar(100)
+  clave varchar(100)
+  salario_mensual decimal(20,5)
   estado_usuario bool
+
+  creado_en timestamp
+  modificado_en timestamp
+  creado_por varchar(100)
+  modificado_por varchar(100)
 }
 
 table presupuesto {
   id_presupuesto int [primary key]
   id_usuario int
-  nombre varchar(300)
+  nombre varchar(100)
   anio_inicio int
   mes_inicio int
   anio_fin int
   mes_fin int
-  total_ingresos numeric(30, 5)
-  total_gastos numeric(30, 5)
-  total_ahorros numeric(30, 5)
-  fecha_creacion datetime
-  hora_creacion time
+  total_ingresos decimal(20,5)
+  total_gastos decimal(20,5)
+  total_ahorros decimal(20,5)
+  fecha_hora_creacion timestamp
   estado_presupuesto bool
+
+  creado_en timestamp
+  modificado_en timestamp
+  creado_por varchar(100)
+  modificado_por varchar(100)
 }
 
 table categoria {
   id_categoria int [primary key]
-  nombre varchar(300)
-  descripcion_detallada varchar(300)
-  tipo_categoria varchar(30)
+  nombre varchar(100)
+  descripcion_detallada varchar(100)
+  tipo_categoria varchar(40)
+
+  creado_en timestamp
+  modificado_en timestamp
+  creado_por varchar(100)
+  modificado_por varchar(100)
 }
 
 table subcategoria {
   id_subcategoria int [primary key]
   id_categoria int
-  nombre varchar(300)
+  nombre varchar(100)
   descripcion_detallada varchar(300)
   activo bool
   es_por_defecto int
+
+  creado_en timestamp
+  modificado_en timestamp
+  creado_por varchar(100)
+  modificado_por varchar(100)
 }
 
 table presupuesto_detalle {
   id_detalle int [primary key]
   id_presupuesto int
   id_subcategoria int
-  monto_mensual_asignado numeric(30,5)
+  monto_mensual_asignado decimal(20,5)
   observaciones varchar(300)
+
+  creado_en timestamp
+  modificado_en timestamp
+  creado_por varchar(100)
+  modificado_por varchar(100)
 }
 
 table obligacion_fija {
   id_obligacion int [primary key]
   id_subcategoria int
-  nombre varchar(300)
+  nombre varchar(100)
   descripcion_detallada varchar(300)
-  monto_fijo_mensual numeric(30,5)
+  monto_fijo_mensual decimal(20,5)
   dia_vencimiento int
   vigente bool
-  fecha_inicio datetime
-  fecha_fin datetime
+  fecha_inicio timestamp
+  fecha_fin timestamp
+
+  creado_en timestamp
+  modificado_en timestamp
+  creado_por varchar(100)
+  modificado_por varchar(100)
 }
 
 table transaccion {
@@ -66,16 +96,19 @@ table transaccion {
   id_detalle int 
   anio_transaccion int
   mes_transaccion int
-  id_obligacion int
-  tipo_transaccion varchar(30)
+  tipo_transaccion varchar(40)
   descripcion varchar(300)
-  monto_transaccion numeric(30,5)
+  monto_transaccion decimal(20,5)
   fecha_transaccion datetime
-  metodo_pago varchar(50)
+  metodo_pago varchar(40)
   num_factura int
   observaciones varchar(300)
-  fecha_registro datetime
-  hora_registro time
+  fecha_hora_registro timestamp
+
+  creado_en timestamp
+  modificado_en timestamp
+  creado_por varchar(100)
+  modificado_por varchar(100)
 }
 
 table obligacionfija_transaccion {
@@ -95,6 +128,6 @@ Ref: "subcategoria"."id_subcategoria" < "obligacion_fija"."id_subcategoria"
 
 Ref: "presupuesto_detalle"."id_detalle" < "transaccion"."id_detalle"
 
-Ref: "obligacion_fija"."id_obligacion" < "obligacionfija_transaccion"."id_transaccion"
+Ref: "transaccion"."id_transaccion" < "obligacionfija_transaccion"."id_transaccion"
 
-Ref: "transaccion"."id_transaccion" < "obligacionfija_transaccion"."id_obligacion"
+Ref: "obligacion_fija"."id_obligacion" < "obligacionfija_transaccion"."id_obligacion"
