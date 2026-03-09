@@ -7,6 +7,39 @@ in p_es_defecto tinyint,
 in p_creado_por varchar(100)
 )
 begin
+	if not exists(
+		select 
+			1
+		from 	
+			categoria
+		where 
+			id_categoria = p_id_categoria
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, la categoria no existe';
+	end if;
+
+	if p_nombre is null or trim(p_nombre) = '' then 
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el nombre de la subcategoria es obligatorio escribirlo';
+	end if;
+	
+	if p_es_defecto = 1 and exists(
+		select 
+			1
+		from 	
+			subcategoria
+		where 
+			id_categoria = p_id_categoria
+		and es_por_defecto = 1
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, ya existe una subcategoria por defecto para esta categoria';
+	end if;
+	
 	insert into subcategoria(
 	id_categoria,
 	nombre,
@@ -24,7 +57,7 @@ begin
     p_creado_por
 	);
 end;
-call sp_insertar_subcategoria(2, 'Energia Electrica', 'Pago de recibo de energia electrica', 0, 'admin');
+call sp_insertar_subcategoria(2, 'Agua Potable', 'Pago de recibo de agua', 0, 'admin');
 select * from subcategoria;
 
 drop procedure if exists sp_actualizar_subcategoria;
@@ -35,13 +68,32 @@ in p_descripcion varchar(100),
 in p_modificado_por varchar(100)
 )
 begin
+	if not exists(
+		select 
+			1
+		from 	
+			subcategoria
+		where 
+			id_subcategoria = p_id_subcategoria
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, la subcategoria no existe';
+	end if;
+
+	if p_nombre is null or trim(p_nombre) = '' then 
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el nombre de la subcategoria es obligatorio escribirlo';
+	end if;
+
 	update subcategoria set 
 		nombre = p_nombre,
 		descripcion_detallada = p_descripcion,
 		modificado_por = p_modificado_por
 	where id_subcategoria = p_id_subcategoria;
 end;
-call sp_actualizar_subcategoria(2, 'Enee', 'Pago de energia', 'admin');
+call sp_actualizar_subcategoria(4, 'Agua Potable', 'Pago de recibo de agua potable', 'admin');
 select * from subcategoria;
 
 drop procedure if exists sp_eliminar_subcategoria;
@@ -49,6 +101,19 @@ create procedure sp_eliminar_subcategoria(
 in p_id_subcategoria int
 )
 begin
+	if not exists(
+		select 
+			1
+		from 	
+			subcategoria
+		where 
+			id_subcategoria = p_id_subcategoria
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, la subcategoria no existe';
+	end if;
+	
    if exists (
 	    select 
 	    	1
@@ -76,6 +141,19 @@ create procedure sp_consultar_subcategoria(
 in p_id_subcategoria int
 )
 begin
+	if not exists(
+		select 
+			1
+		from 	
+			subcategoria
+		where 
+			id_subcategoria = p_id_subcategoria
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, la subcategoria no existe';
+	end if;
+	
 	select
 		s.id_subcategoria,
 		s.id_categoria,
@@ -94,13 +172,26 @@ begin
 		on c.id_categoria = s.id_categoria
 	where s.id_subcategoria = p_id_subcategoria;
 end;
-call sp_consultar_subcategoria(1);
+call sp_consultar_subcategoria(4);
 
 drop procedure if exists sp_listar_subcategorias_por_categoria;
 create procedure sp_listar_subcategorias_por_categoria(
 in p_id_categoria int
 )
 begin
+	if not exists(
+		select 
+			1
+		from 	
+			categoria
+		where 
+			id_categoria = p_id_categoria
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, la categoria no existe';
+	end if;
+
 	select *
 	from subcategoria
 	where id_categoria = p_id_categoria;
