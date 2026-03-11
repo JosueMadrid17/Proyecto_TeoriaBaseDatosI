@@ -167,10 +167,12 @@ begin
 		s.modificado_en,
 		s.creado_por,
 		s.modificado_por
-	from subcategoria s
+	from 
+		subcategoria s
 	inner join categoria c
 		on c.id_categoria = s.id_categoria
-	where s.id_subcategoria = p_id_subcategoria;
+	where 
+		s.id_subcategoria = p_id_subcategoria;
 end;
 call sp_consultar_subcategoria(4);
 
@@ -192,8 +194,20 @@ begin
 		message_text = 'Lo siento, la categoria no existe';
 	end if;
 
-	select *
-	from subcategoria
-	where id_categoria = p_id_categoria;
+	select 
+		id_subcategoria,
+		id_categoria,
+		nombre,
+		descripcion_detallada,
+		activo,
+		es_por_defecto,
+		creado_en,
+		modificado_en,
+		creado_por,
+		modificado_por
+	from
+		subcategoria
+	where 
+		id_categoria = p_id_categoria;
 end;
 call sp_listar_subcategorias_por_categoria(3);

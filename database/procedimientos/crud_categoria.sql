@@ -158,9 +158,19 @@ begin
 		message_text = 'Lo siento, la categoria no existe';
 	end if;
 
-	select *
-	from categoria
-	where id_categoria = p_id_categoria;
+	select 
+		id_categoria,
+		nombre,
+		descripcion_detallada,
+		tipo_categoria,
+		creado_en,
+		modificado_en,
+		creado_por,
+		modificado_por
+	from 
+		categoria
+	where 
+		id_categoria = p_id_categoria;
 end;
 call sp_consultar_categoria(2);
 
@@ -183,8 +193,17 @@ begin
 		message_text = 'Lo siento, el usuario no existe';
 	end if;
 
-	select distinct c.*
-	from categoria c
+	select distinct 
+		c.id_categoria,
+		c.nombre,
+		c.descripcion_detallada,
+		c.tipo_categoria,
+		c.creado_en,
+		c.modificado_en,
+		c.creado_por,
+		c.modificado_por
+	from 
+		categoria c
 	inner join subcategoria s
 		on c.id_categoria = s.id_categoria
 	inner join presupuesto_detalle pd
@@ -193,7 +212,8 @@ begin
 		on pd.id_presupuesto = p.id_presupuesto
 	inner join usuario u
 		on p.id_usuario = u.id_usuario
-	where u.id_usuario = p_id_usuario
+	where 
+		u.id_usuario = p_id_usuario
 		and (p_tipo is null or c.tipo_categoria = p_tipo);
 end;
 call sp_listar_categorias(1, 'gasto');

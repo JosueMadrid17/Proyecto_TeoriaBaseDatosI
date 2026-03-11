@@ -198,16 +198,45 @@ begin
 		message_text = 'Lo siento, el usuario no existe';
 	end if;
 
-	select *  
-	from usuario
-	where id_usuario = p_id_usuario;
+	select 
+		id_usuario,
+		primer_nombre,
+		segundo_nombre,
+		primer_apellido,
+		segundo_apellido,
+		correo_electronico,
+		clave,
+		salario_mensual,
+		estado_usuario,
+		creado_en,
+		modificado_en,
+		creado_por,
+		modificado_por
+	from 
+		usuario
+	where 
+		id_usuario = p_id_usuario;
 end;
 call sp_consultar_usuario(1);
 
 drop procedure if exists sp_listar_usuarios;
 create procedure sp_listar_usuarios()
 begin
-	select *  
-	from usuario;
+	select 
+		id_usuario,
+		primer_nombre,
+		segundo_nombre,
+		primer_apellido,
+		segundo_apellido,
+		correo_electronico,
+		clave,
+		salario_mensual,
+		estado_usuario,
+		creado_en,
+		modificado_en,
+		creado_por,
+		modificado_por
+	from 
+		usuario;
 end;
 call sp_listar_usuarios();
