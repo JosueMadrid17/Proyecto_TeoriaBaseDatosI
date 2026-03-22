@@ -196,7 +196,7 @@ begin
 end;
 call sp_consultar_obligacion_fija(1);
 
-drop procedure if exists sp_listar_obligacion_fija;
+drop procedure if exists sp_listar_obligaciones_usuario;
 create procedure sp_listar_obligaciones_usuario(
 in p_id_usuario int, 
 in p_activo tinyint
