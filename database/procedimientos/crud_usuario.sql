@@ -240,3 +240,84 @@ begin
 		usuario;
 end;
 call sp_listar_usuarios();
+
+drop procedure if exists sp_iniciar_sesion_usuario;
+create procedure sp_iniciar_sesion_usuario(
+in p_email varchar(100),
+in p_clave varchar(100)
+)
+begin
+	if p_email is null or trim(p_email) = '' then 
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el correo electronico es obligatorio escribirlo';
+	end if;
+
+	if p_clave is null or trim(p_clave) = '' then 
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, la clave es obligatoria escribirla';
+	end if;
+
+	if not exists(
+		select 
+			1
+		from 
+			usuario
+		where 
+			correo_electronico = p_email
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el correo electronico no existe';
+	end if;
+
+	if not exists(
+		select 
+			1
+		from 	
+			usuario
+		where 
+			correo_electronico = p_email
+			and clave = p_clave
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, la clave o el correo es incorrecto';
+	end if;
+
+	if exists(
+		select 
+			1
+		from 
+			usuario
+		where 
+			correo_electronico = p_email
+			and clave = p_clave
+			and estado_usuario = 0
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el usuario esta inactivo';
+	end if;
+
+	select
+		id_usuario,
+		primer_nombre,
+		segundo_nombre,
+		primer_apellido,
+		segundo_apellido,
+		correo_electronico,
+		clave,
+		salario_mensual,
+		estado_usuario,
+		creado_por,
+		modificado_por
+	from 
+		usuario
+	where 
+		correo_electronico = p_email
+		and clave = p_clave
+		and estado_usuario = 1;
+end;
+call sp_iniciar_sesion_usuario('josue17@gmail.com', 'josue2006');
