@@ -196,8 +196,7 @@ begin
     update presupuesto set 
     	total_ingresos = v_total_ingresos,
         total_gastos = v_total_gastos,
-        total_ahorros = v_total_ahorros,
-        modificado_por = p_creado_por
+        total_ahorros = v_total_ahorros
     where 
     	id_presupuesto = v_id_presupuesto;
 
