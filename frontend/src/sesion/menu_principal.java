@@ -13,6 +13,7 @@ public class menu_principal{
     menu_transaccion menu_transaccion = new menu_transaccion();
     menu_procedimientos_logicos menu_procedimientos_logicos = new menu_procedimientos_logicos();
     menu_funciones menu_funciones = new menu_funciones();
+    menu_reportes menu_reportes = new menu_reportes();
 
     public void mostrar(usuario usuario_actual){
         if(usuario_actual.is_es_admin()){
@@ -38,7 +39,6 @@ public class menu_principal{
             System.out.println("7. Transacciones");
             System.out.println("8. Procedimientos");
             System.out.println("9. Funciones");
-            System.out.println("10.Reportes");
             System.out.println("0. Cerrar Sesion");
 
             System.out.print("Por favor, seleccione una opcion: ");
@@ -71,9 +71,6 @@ public class menu_principal{
                     break;
                 case 9:
                      menu_funciones.mostrar_menu(usuario_actual);
-                    break;
-                case 10:
-                    menu_reportes();
                     break;
                 case 0:
                     System.out.println("Se ha cerrado sesion");
@@ -121,7 +118,7 @@ public class menu_principal{
                     menu_transaccion.mostrar_menu_usuario(usuario_actual);
                     break;
                 case 6:
-                    menu_reportes();
+                    menu_reportes.mostrar_menu(usuario_actual);
                     break;
                 case 0:
                     System.out.println("Se ha cerrado sesion");
@@ -131,12 +128,5 @@ public class menu_principal{
                     break;
             }
         }while(opcion != 0);
-    }
-
-    public void menu_reportes(){
-        System.out.println("\n------------------------------------------");
-        System.out.println("---------------- REPORTES ----------------");
-        System.out.println("------------------------------------------");
-        System.out.println("Modulo reportes pendiente...");
     }
 }
