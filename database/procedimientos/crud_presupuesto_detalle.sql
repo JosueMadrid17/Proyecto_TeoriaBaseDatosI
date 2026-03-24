@@ -200,6 +200,8 @@ begin
 		pd.id_presupuesto,
 		pd.monto_mensual_asignado,
 		pd.observaciones,
+		pd.creado_por,
+		pd.modificado_por,
 		s.id_subcategoria,
 		s.nombre as nombre_subcategoria,
 		c.id_categoria,
