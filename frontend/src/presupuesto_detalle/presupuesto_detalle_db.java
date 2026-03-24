@@ -131,44 +131,48 @@ public class presupuesto_detalle_db{
     }
 
     public boolean presupuesto_pertenece_a_usuario(int id_presupuesto, int id_usuario){
-        String sql = "select 1 from presupuesto where id_presupuesto = ? and id_usuario = ?";
+        String sql = "{call sp_validar_presupuesto_usuario(?, ?)}";
 
         try(Connection conexion = conexion_bd.obtener_conexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)){
+            CallableStatement cs = conexion.prepareCall(sql)){
 
-            ps.setInt(1, id_presupuesto);
-            ps.setInt(2, id_usuario);
+            cs.setInt(1, id_presupuesto);
+            cs.setInt(2, id_usuario);
 
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
+            ResultSet rs = cs.executeQuery();
+
+            if(rs.next()){
+                return rs.getInt("pertenece") == 1;
+            }
 
         }catch(SQLException e){
             System.out.println("Error al validar presupuesto del usuario:");
             System.out.println(e.getMessage());
-            return false;
         }
+
+        return false;
     }
 
     public boolean detalle_pertenece_a_usuario(int id_detalle, int id_usuario){
-        String sql =
-            "select 1 " +
-            "from presupuesto_detalle pd " +
-            "inner join presupuesto p on pd.id_presupuesto = p.id_presupuesto " +
-            "where pd.id_detalle = ? and p.id_usuario = ?";
+        String sql = "{call sp_validar_detalle_usuario(?, ?)}";
 
         try(Connection conexion = conexion_bd.obtener_conexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)){
+            CallableStatement cs = conexion.prepareCall(sql)){
 
-            ps.setInt(1, id_detalle);
-            ps.setInt(2, id_usuario);
+            cs.setInt(1, id_detalle);
+            cs.setInt(2, id_usuario);
 
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
+            ResultSet rs = cs.executeQuery();
+
+            if(rs.next()){
+                return rs.getInt("pertenece") == 1;
+            }
 
         }catch(SQLException e){
             System.out.println("Error al validar detalle del usuario:");
             System.out.println(e.getMessage());
-            return false;
         }
+
+        return false;
     }
 }

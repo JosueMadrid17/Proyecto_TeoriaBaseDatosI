@@ -216,3 +216,71 @@ begin
 	where pd.id_presupuesto = p_id_presupuesto;
 end;
 call sp_listar_presupuesto_detalle(1);
+
+drop procedure if exists sp_validar_presupuesto_usuario;
+create procedure sp_validar_presupuesto_usuario(
+in p_id_presupuesto int,
+in p_id_usuario int
+)
+begin
+	if not exists(
+		select 
+			1
+		from 	
+			usuario
+		where 
+			id_usuario = p_id_usuario
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el usuario no existe';
+	end if;
+
+	select 
+		case
+			when exists(
+				select 
+					1
+				from 
+					presupuesto
+				where 
+					id_presupuesto = p_id_presupuesto
+					and id_usuario = p_id_usuario
+			)
+			then 1 else 0 end as pertenece;
+end;
+
+drop procedure if exists sp_validar_detalle_usuario;
+create procedure sp_validar_detalle_usuario(
+in p_id_detalle int,
+in p_id_usuario int
+)
+begin
+	if not exists(
+		select 
+			1
+		from 	
+			usuario
+		where 
+			id_usuario = p_id_usuario
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el usuario no existe';
+	end if;
+
+	select 
+		case
+			when exists(
+				select 
+					1
+				from 
+					presupuesto_detalle pd
+				inner join presupuesto p
+					on pd.id_presupuesto = p.id_presupuesto
+				where 
+					pd.id_detalle = p_id_detalle
+					and p.id_usuario = p_id_usuario
+			)
+			then 1 else 0 end as pertenece;
+end;
