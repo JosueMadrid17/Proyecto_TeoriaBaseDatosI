@@ -242,3 +242,79 @@ begin
 		and (p_activo is null or o.vigente = p_activo);
 end;
 call sp_listar_obligaciones_usuario(1, null);
+
+drop procedure if exists sp_validar_obligacion_usuario;
+create procedure sp_validar_obligacion_usuario(
+in p_id_obligacion int,
+in p_id_usuario int
+)
+begin
+	if not exists(
+		select 
+			1
+		from 	
+			usuario
+		where 
+			id_usuario = p_id_usuario
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el usuario no existe';
+	end if;
+
+	select 
+		case
+			when exists(
+				select 
+					1
+				from 
+					obligacion_fija o
+				inner join subcategoria s
+					on o.id_subcategoria = s.id_subcategoria
+				inner join presupuesto_detalle pd
+					on s.id_subcategoria = pd.id_subcategoria
+				inner join presupuesto p
+					on pd.id_presupuesto = p.id_presupuesto
+				where 
+					o.id_obligacion = p_id_obligacion
+					and p.id_usuario = p_id_usuario
+			)
+			then 1 else 0 end as pertenece;
+end;
+
+drop procedure if exists sp_validar_subcategoria_usuario;
+create procedure sp_validar_subcategoria_usuario(
+in p_id_subcategoria int,
+in p_id_usuario int
+)
+begin
+	if not exists(
+		select 
+			1
+		from 	
+			usuario
+		where 
+			id_usuario = p_id_usuario
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el usuario no existe';
+	end if;
+
+	select 
+		case
+			when exists(
+				select 
+					1
+				from 
+					subcategoria s
+				inner join presupuesto_detalle pd
+					on s.id_subcategoria = pd.id_subcategoria
+				inner join presupuesto p
+					on pd.id_presupuesto = p.id_presupuesto
+				where 
+					s.id_subcategoria = p_id_subcategoria
+					and p.id_usuario = p_id_usuario
+			)
+			then 1 else 0 end as pertenece;
+end;

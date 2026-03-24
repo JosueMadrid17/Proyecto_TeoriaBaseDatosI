@@ -178,51 +178,48 @@ public class obligacion_fija_db{
     }
 
     public boolean obligacion_pertenece_a_usuario(int id_obligacion, int id_usuario){
-        String sql =
-            "select 1 " +
-            "from obligacion_fija o " +
-            "inner join subcategoria s on o.id_subcategoria = s.id_subcategoria " +
-            "inner join presupuesto_detalle pd on s.id_subcategoria = pd.id_subcategoria " +
-            "inner join presupuesto p on pd.id_presupuesto = p.id_presupuesto " +
-            "where o.id_obligacion = ? and p.id_usuario = ?";
+        String sql = "{call sp_validar_obligacion_usuario(?, ?)}";
 
         try(Connection conexion = conexion_bd.obtener_conexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)){
+            CallableStatement cs = conexion.prepareCall(sql)){
 
-            ps.setInt(1, id_obligacion);
-            ps.setInt(2, id_usuario);
+            cs.setInt(1, id_obligacion);
+            cs.setInt(2, id_usuario);
 
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
+            ResultSet rs = cs.executeQuery();
+
+            if(rs.next()){
+                return rs.getInt("pertenece") == 1;
+            }
 
         }catch(SQLException e){
             System.out.println("Error al validar obligacion del usuario:");
             System.out.println(e.getMessage());
-            return false;
         }
+
+        return false;
     }
 
     public boolean subcategoria_pertenece_a_usuario(int id_subcategoria, int id_usuario){
-        String sql =
-            "select 1 " +
-            "from subcategoria s " +
-            "inner join presupuesto_detalle pd on s.id_subcategoria = pd.id_subcategoria " +
-            "inner join presupuesto p on pd.id_presupuesto = p.id_presupuesto " +
-            "where s.id_subcategoria = ? and p.id_usuario = ?";
+        String sql = "{call sp_validar_subcategoria_usuario(?, ?)}";
 
         try(Connection conexion = conexion_bd.obtener_conexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)){
+            CallableStatement cs = conexion.prepareCall(sql)){
 
-            ps.setInt(1, id_subcategoria);
-            ps.setInt(2, id_usuario);
+            cs.setInt(1, id_subcategoria);
+            cs.setInt(2, id_usuario);
 
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
+            ResultSet rs = cs.executeQuery();
+
+            if(rs.next()){
+                return rs.getInt("pertenece") == 1;
+            }
 
         }catch(SQLException e){
             System.out.println("Error al validar subcategoria del usuario:");
             System.out.println(e.getMessage());
-            return false;
         }
+
+        return false;
     }
 }
