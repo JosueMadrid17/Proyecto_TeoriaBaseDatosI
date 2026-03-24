@@ -955,7 +955,7 @@ begin
 		v_nombre_presupuesto as nombre_prespuesto,
 		v_id_usuario as id_usuario,
 		v_anio_inicio as anio_inicio,
-		v_anio_inicio as mes_inicio,
+		v_mes_inicio as mes_inicio,
 		v_anio_fin as anio_fin,
 		v_mes_fin as mes_fin,
 		v_total_ingresos as total_ingresos_ejecutados,
