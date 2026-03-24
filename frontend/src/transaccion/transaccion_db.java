@@ -224,49 +224,44 @@ public class transaccion_db{
     }
 
     public boolean detalle_pertenece_a_usuario(int id_detalle, int id_usuario){
-        String sql =
-            "select 1 " +
-            "from presupuesto_detalle pd " +
-            "inner join presupuesto p on pd.id_presupuesto = p.id_presupuesto " +
-            "where pd.id_detalle = ? and p.id_usuario = ?";
+        String sql = "{call sp_validar_detalle_transaccion_usuario(?, ?)}";
 
         try(Connection conexion = conexion_bd.obtener_conexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)){
+            CallableStatement cs = conexion.prepareCall(sql)){
 
-            ps.setInt(1, id_detalle);
-            ps.setInt(2, id_usuario);
+            cs.setInt(1, id_detalle);
+            cs.setInt(2, id_usuario);
 
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
+            ResultSet rs = cs.executeQuery();
 
+            if(rs.next()){
+                return rs.getInt("pertenece") == 1;
+            }
         }catch(SQLException e){
             System.out.println("Error al validar detalle del usuario:");
             System.out.println(e.getMessage());
-            return false;
         }
+        return false;
     }
 
-    public boolean transaccion_pertenece_a_usuario(int id_transaccion, int id_usuario){
-        String sql =
-            "select 1 " +
-            "from transaccion t " +
-            "inner join presupuesto_detalle pd on t.id_detalle = pd.id_detalle " +
-            "inner join presupuesto p on pd.id_presupuesto = p.id_presupuesto " +
-            "where t.id_transaccion = ? and p.id_usuario = ?";
+   public boolean transaccion_pertenece_a_usuario(int id_transaccion, int id_usuario){
+        String sql = "{call sp_validar_transaccion_usuario(?, ?)}";
 
         try(Connection conexion = conexion_bd.obtener_conexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)){
+            CallableStatement cs = conexion.prepareCall(sql)){
 
-            ps.setInt(1, id_transaccion);
-            ps.setInt(2, id_usuario);
+            cs.setInt(1, id_transaccion);
+            cs.setInt(2, id_usuario);
 
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
+            ResultSet rs = cs.executeQuery();
 
+            if(rs.next()){
+                return rs.getInt("pertenece") == 1;
+            }
         }catch(SQLException e){
             System.out.println("Error al validar transaccion del usuario:");
             System.out.println(e.getMessage());
-            return false;
         }
+        return false;
     }
 }

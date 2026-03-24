@@ -326,3 +326,75 @@ begin
 		and (p_tipo is null or t.tipo_transaccion = p_tipo);
 end;
 call sp_listar_transacciones_presupuesto(1, 2026, 4, 'gasto');
+
+drop procedure if exists sp_validar_detalle_transaccion_usuario;
+create procedure sp_validar_detalle_transaccion_usuario(
+in p_id_detalle int,
+in p_id_usuario int
+)
+begin
+	if not exists(
+		select 
+			1
+		from 	
+			usuario
+		where 
+			id_usuario = p_id_usuario
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el usuario no existe';
+	end if;
+
+	select 
+		case
+			when exists(
+				select 
+					1
+				from 
+					presupuesto_detalle pd
+				inner join presupuesto p
+					on pd.id_presupuesto = p.id_presupuesto
+				where 
+					pd.id_detalle = p_id_detalle
+					and p.id_usuario = p_id_usuario
+			)
+			then 1 else 0 end as pertenece;
+end;
+
+drop procedure if exists sp_validar_transaccion_usuario;
+create procedure sp_validar_transaccion_usuario(
+in p_id_transaccion int,
+in p_id_usuario int
+)
+begin
+	if not exists(
+		select 
+			1
+		from 	
+			usuario
+		where 
+			id_usuario = p_id_usuario
+	)then
+		signal sqlstate '45000'
+		set 
+		message_text = 'Lo siento, el usuario no existe';
+	end if;
+
+	select 
+		case
+			when exists(
+				select 
+					1
+				from 
+					transaccion t
+				inner join presupuesto_detalle pd
+					on t.id_detalle = pd.id_detalle
+				inner join presupuesto p
+					on pd.id_presupuesto = p.id_presupuesto
+				where 
+					t.id_transaccion = p_id_transaccion
+					and p.id_usuario = p_id_usuario
+			)
+			then 1 else 0 end as pertenece;
+end;
